@@ -101,7 +101,7 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                         .cardColors(containerColor = Color(0xfff9f6f6)),
                     elevation = CardDefaults.cardElevation(4.dp)
                 ) {
-
+                    Column (modifier = Modifier.padding(24.dp)) {
                         Text(
                             text = "Seus dados",
                             modifier = Modifier.fillMaxWidth(),
@@ -178,7 +178,7 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                                 fontSize = 14.sp
                             )
                         }
-
+                    }
                 }
             }
         }
