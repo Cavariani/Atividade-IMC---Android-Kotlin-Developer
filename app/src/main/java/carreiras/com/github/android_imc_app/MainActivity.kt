@@ -170,7 +170,12 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(
-                            onClick = {},
+                            onClick = {
+                                imc.value = calcularImc(
+                                    altura = altura.value.toDouble(),
+                                    peso = peso.value.toDouble()
+                                )
+                            },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(48.dp),
@@ -222,7 +227,7 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                     )
                 }
                 Text(
-                    text = "23.2",
+                    text = imc.value.toString(),
                     modifier = Modifier.fillMaxWidth(),
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
