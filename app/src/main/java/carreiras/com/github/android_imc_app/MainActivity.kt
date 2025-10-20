@@ -51,6 +51,13 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                     .fillMaxWidth()
                     .height(160.dp)
             ) {
+                Image(
+                    painter = painterResource(id = R.drawable.bmi),
+                    contentDescription = "logo",
+                    modifier = Modifier
+                        .size(100.dp)
+                        .padding(top = 16.dp)
+                )
             }
             // --- formulário
             Column(
