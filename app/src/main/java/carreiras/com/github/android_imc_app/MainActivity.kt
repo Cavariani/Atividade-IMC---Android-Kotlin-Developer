@@ -8,6 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -101,7 +102,7 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                         .cardColors(containerColor = Color(0xfff9f6f6)),
                     elevation = CardDefaults.cardElevation(4.dp)
                 ) {
-                    Column (modifier = Modifier.padding(24.dp)) {
+                    Column(modifier = Modifier.padding(24.dp)) {
                         Text(
                             text = "Seus dados",
                             modifier = Modifier.fillMaxWidth(),
@@ -182,7 +183,47 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                 }
             }
         }
-    }
-}
 // -- Card Resultado
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+                .padding(horizontal = 32.dp, vertical = 24.dp)
+                .align(Alignment.BottomCenter),
+            colors = CardDefaults.cardColors(containerColor = Color(0xff329F6B)),
+            elevation = CardDefaults.cardElevation(4.dp),
+            //border = BorderStroke(width = 1.dp, Color(0xffed145b))
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(horizontal = 32.dp)
+                    .fillMaxSize()
+            ) {
+                Column() {
+                    Text(
+                        text = "Resultado",
+                        color = Color.White,
+                        fontSize = 14.sp
+                    )
+                    Text(
+                        text = "Peso Ideal.",
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        fontSize = 20.sp
+                    )
+                }
+                Text(
+                    text = "23.2",
+                    modifier = Modifier.fillMaxWidth(),
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    fontSize = 36.sp,
+                    textAlign = TextAlign.End
+                )
+            }
+        }
+    }
+
+}
 
