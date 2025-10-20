@@ -227,7 +227,7 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                     )
                 }
                 Text(
-                    text = imc.value.toString(),
+                    text = String.format("%.1f", imc.value),
                     modifier = Modifier.fillMaxWidth(),
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
