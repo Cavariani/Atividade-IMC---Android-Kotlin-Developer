@@ -95,8 +95,8 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                 Card(
                     modifier = Modifier
                         .offset(y = (-30).dp)
-                        .fillMaxWidth()
-                    .height(300.dp),
+                        .fillMaxWidth(),
+                    //.height(300.dp),
                     colors = CardDefaults
                         .cardColors(containerColor = Color(0xfff9f6f6)),
                     elevation = CardDefaults.cardElevation(4.dp)
