@@ -6,29 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -55,22 +39,17 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
 @Composable
 fun IMCScreen(modifier: Modifier = Modifier) {
 
-    var peso = remember { mutableStateOf("") }
-    var altura = remember { mutableStateOf("") }
-    var imc = remember { mutableStateOf(0.0) }
-    var statusImc = remember { mutableStateOf("") }
+    val peso = rememberSaveable { mutableStateOf("") }
+    val altura = rememberSaveable { mutableStateOf("") } // em cm
+    val imc = rememberSaveable { mutableStateOf(0.0) }
+    val statusImc = rememberSaveable { mutableStateOf("") }
 
-    Box(
-        modifier = modifier.fillMaxSize()
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
+    Box(modifier = modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+
             // ---- header ---------
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -93,8 +72,8 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(top = 12.dp, bottom = 24.dp)
                 )
-
             }
+
             // --- formulário
             Column(
                 modifier = Modifier
@@ -105,9 +84,7 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .offset(y = (-30).dp)
                         .fillMaxWidth(),
-                    //.height(300.dp),
-                    colors = CardDefaults
-                        .cardColors(containerColor = Color(0xfff9f6f6)),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xfff9f6f6)),
                     elevation = CardDefaults.cardElevation(4.dp)
                 ) {
                     Column(modifier = Modifier.padding(24.dp)) {
@@ -119,71 +96,79 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                             color = colorResource(id = R.color.vermelho_fiap),
                             textAlign = TextAlign.Center
                         )
-                        Spacer(modifier = Modifier.height(32.dp))
+
+                        Spacer(Modifier.height(32.dp))
+
+                        // PESO (kg)
                         Text(
-                            text = "Seu peso",
+                            text = "Seu peso (kg)",
                             modifier = Modifier.padding(bottom = 8.dp),
                             fontSize = 12.sp,
-                            fontWeight = FontWeight.Normal,
                             color = colorResource(id = R.color.vermelho_fiap)
                         )
                         OutlinedTextField(
                             value = peso.value,
-                            onValueChange = { peso.value = it },
+                            onValueChange = { peso.value = it.replace(',', '.') }, // normaliza vírgula
                             modifier = Modifier.fillMaxWidth(),
-                            placeholder = {
-                                Text(text = "Seu peso em Kg.")
-                            },
+                            placeholder = { Text("Ex.: 72.5") },
                             colors = OutlinedTextFieldDefaults.colors(
                                 unfocusedBorderColor = colorResource(id = R.color.vermelho_fiap),
                                 focusedBorderColor = colorResource(id = R.color.vermelho_fiap)
                             ),
                             shape = RoundedCornerShape(16.dp),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                            singleLine = true
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Spacer(Modifier.height(16.dp))
+
+                        // ALTURA (cm)
                         Text(
-                            text = "Sua altura",
+                            text = "Sua altura (cm)",
                             modifier = Modifier.padding(bottom = 8.dp),
                             fontSize = 12.sp,
-                            fontWeight = FontWeight.Normal,
                             color = colorResource(id = R.color.vermelho_fiap)
                         )
                         OutlinedTextField(
                             value = altura.value,
-                            onValueChange = { altura.value = it },
+                            onValueChange = { altura.value = it.replace(',', '.') },
                             modifier = Modifier.fillMaxWidth(),
-                            placeholder = {
-                                Text(
-                                    text = "Sua altura em cm."
-                                )
-                            },
+                            placeholder = { Text("Ex.: 170") },
                             colors = OutlinedTextFieldDefaults.colors(
                                 unfocusedBorderColor = colorResource(id = R.color.vermelho_fiap),
                                 focusedBorderColor = colorResource(id = R.color.vermelho_fiap)
                             ),
                             shape = RoundedCornerShape(16.dp),
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType =
-                                    KeyboardType.Decimal
-                            )
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                            singleLine = true
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Spacer(Modifier.height(16.dp))
+
                         Button(
                             onClick = {
-                                imc.value = calcularImc(
-                                    altura = altura.value.toDouble(),
-                                    peso = peso.value.toDouble()
+                                val pesoNum = peso.value.toDoubleOrNull()
+                                val alturaCm = altura.value.toDoubleOrNull()
+
+                                if (pesoNum == null || alturaCm == null || pesoNum <= 0.0 || alturaCm <= 0.0) {
+                                    imc.value = 0.0
+                                    statusImc.value = "Preencha peso e altura válidos"
+                                    return@Button
+                                }
+
+                                val valorImc = calcularImc(
+                                    altura = alturaCm, // em cm (conversão é feita na função)
+                                    peso = pesoNum
                                 )
-                                statusImc.value = determinarClassificacaoIMC(imc.value)
+                                imc.value = valorImc
+                                statusImc.value = determinarClassificacaoIMC(valorImc)
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(48.dp),
                             shape = RoundedCornerShape(16.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor =
-                                    colorResource(id = R.color.vermelho_fiap)
+                                containerColor = colorResource(id = R.color.vermelho_fiap)
                             )
                         ) {
                             Text(
@@ -197,7 +182,8 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                 }
             }
         }
-// -- Card Resultado
+
+        // -- Card Resultado
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -205,8 +191,7 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                 .padding(horizontal = 32.dp, vertical = 24.dp)
                 .align(Alignment.BottomCenter),
             colors = CardDefaults.cardColors(containerColor = Color(0xff329F6B)),
-            elevation = CardDefaults.cardElevation(4.dp),
-            //border = BorderStroke(width = 1.dp, Color(0xffed145b))
+            elevation = CardDefaults.cardElevation(4.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -214,12 +199,8 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                     .padding(horizontal = 32.dp)
                     .fillMaxSize()
             ) {
-                Column() {
-                    Text(
-                        text = "Resultado",
-                        color = Color.White,
-                        fontSize = 14.sp
-                    )
+                Column {
+                    Text(text = "Resultado", color = Color.White, fontSize = 14.sp)
                     Text(
                         text = statusImc.value,
                         fontWeight = FontWeight.Bold,
@@ -238,6 +219,4 @@ fun IMCScreen(modifier: Modifier = Modifier) {
             }
         }
     }
-
 }
-
